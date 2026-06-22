@@ -1,0 +1,4 @@
+javafx-sdk-21.0.7/
+out/
+*.class
+server/
