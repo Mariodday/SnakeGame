@@ -1,18 +1,10 @@
 @echo off
 setlocal
 
-:: ============================================================
-:: SNAKE GAME - Launcher (Windows)
-:: Ajusta FX_PATH si tu JavaFX SDK esta en otra ubicacion
-:: ============================================================
-
-:: --- Ruta al SDK de JavaFX (edita esto si es necesario) ---
 set FX_PATH=C:\javafx-sdk\lib
 
-:: Si existe una variable de entorno PATH_FX definida por el usuario, usarla
 if defined PATH_FX set FX_PATH=%PATH_FX%
 
-:: Verificar que JavaFX existe
 if not exist "%FX_PATH%" (
     echo.
     echo  ERROR: No se encontro JavaFX SDK en: %FX_PATH%
@@ -32,9 +24,7 @@ set OUT_DIR=%~dp0out
 if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
 
 echo.
-echo  ==========================================
 echo    SNAKE GAME - Compilando...
-echo  ==========================================
 echo.
 
 javac --module-path "%FX_PATH%" ^
@@ -52,9 +42,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo  ==========================================
 echo    SNAKE GAME - Iniciando juego...
-echo  ==========================================
 echo.
 
 java --module-path "%FX_PATH%;%OUT_DIR%" -m serpiente/serpiente.Principal
