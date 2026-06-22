@@ -227,7 +227,7 @@ public class EscenaJuego {
     }
 
     private void pedirNombre() {
-        if (yaEnvio) return;
+        if (yaEnvio || modelo.getModo() == ModeloJuego.Modo.DOS_JUGADORES) return;
         yaEnvio = true;
         int pts = modelo.getPuntuacion();
         String nombre = nombreJugador;
