@@ -8,7 +8,6 @@ echo    SNAKE GAME - Descargando e iniciando...
 echo  ==========================================
 echo.
 
-:: Verificar que Java (JDK) esta instalado
 javac -version >nul 2>&1
 if errorlevel 1 (
     echo  ERROR: Java JDK no esta instalado.
@@ -31,7 +30,6 @@ if exist "%INSTALL_DIR%" (
     )
 )
 
-:: Descargar zip del repositorio de GitHub
 echo  Descargando juego desde GitHub...
 curl -L -o "%TEMP%\SnakeGame.zip" "https://github.com/Mariodday/SnakeGame/archive/refs/heads/main.zip"
 if errorlevel 1 (
@@ -40,14 +38,12 @@ if errorlevel 1 (
     exit /b 1
 )
 
-:: Extraer el zip
 echo  Extrayendo archivos...
 powershell -Command "Expand-Archive -Path '%TEMP%\SnakeGame.zip' -DestinationPath '%TEMP%\SnakeGameExtract' -Force"
 move "%TEMP%\SnakeGameExtract\SnakeGame-main" "%INSTALL_DIR%" >nul
 del "%TEMP%\SnakeGame.zip" >nul
 rmdir /s /q "%TEMP%\SnakeGameExtract" >nul
 
-:: Compilar el codigo fuente
 echo  Compilando el juego...
 set SRC=%INSTALL_DIR%\SnakeGame\src
 set OUT=%INSTALL_DIR%\out

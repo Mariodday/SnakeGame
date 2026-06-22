@@ -20,7 +20,7 @@ public class ModeloJuego {
     private int puntosJ2;
     private boolean terminado;
     private boolean comioManzana;
-    private int ganador; // 0=empate, 1=J1, 2=J2
+    private int ganador;
 
     public ModeloJuego(Modo modo) {
         this.modo = modo;
@@ -43,7 +43,6 @@ public class ModeloJuego {
         generarManzana();
     }
 
-    // tick principal llamado cada 150ms desde EscenaJuego
     public void avanzar() {
         if (terminado) return;
 
@@ -90,7 +89,6 @@ public class ModeloJuego {
         }
     }
 
-    // repite hasta encontrar una celda no ocupada por ninguna serpiente
     private void generarManzana() {
         Punto p;
         do {
@@ -106,10 +104,8 @@ public class ModeloJuego {
         return false;
     }
 
-    // IA deliberadamente imperfecta: 1 de cada 3 movimientos es aleatorio
     private void moverIA_decision() {
         if (rnd.nextInt(3) == 0) {
-            // arreglo estatico de enum usado para elegir una direccion aleatoria
             Direccion[] todas = Direccion.values();
             ia.establecerDireccion(todas[rnd.nextInt(todas.length)]);
             return;
@@ -128,7 +124,6 @@ public class ModeloJuego {
         }
     }
 
-    // la IA no muere: al chocar reaparece en otra posicion
     private void moverIA() {
         Punto sig = ia.obtenerCabeza().trasladar(ia.obtenerDireccionSiguiente());
         boolean comio = sig.equals(manzana);
@@ -147,7 +142,6 @@ public class ModeloJuego {
             p = new Punto(rnd.nextInt(COLUMNAS - 6) + 3, rnd.nextInt(FILAS - 6) + 3);
             intentos++;
         } while (jugador1.obtenerCuerpo().contains(p) && intentos < 50);
-        // arreglo estatico de enum para elegir la direccion inicial de reaparicion
         Direccion[] dirs = Direccion.values();
         ia = new Serpiente(p.getColumna(), p.getFila(), dirs[rnd.nextInt(dirs.length)]);
     }

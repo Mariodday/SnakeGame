@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 
 public class EscenaJuego {
 
-    private static final long PASO_NS = 150_000_000L; // 150 ms por tick
+    private static final long PASO_NS = 150_000_000L;
 
     private final Stage stage;
     private final Scene escena;
@@ -31,7 +31,7 @@ public class EscenaJuego {
     private AnimationTimer timer;
     private long tUltimo = 0;
     private boolean pausado = false;
-    private boolean yaEnvio = false; // evita doble envio si el jugador reinicia rapido
+    private boolean yaEnvio = false;
     private String nombreJugador  = "Jugador";
     private String nombreJugador2 = "Jugador 2";
 
@@ -45,12 +45,10 @@ public class EscenaJuego {
         root.setStyle("-fx-background-color: #0d0013;");
         root.setPadding(new Insets(10, 16, 10, 16));
         root.setTop(crearHUD());
-        root.setCenter(crearCentro()); // lienzo + overlay de game over
+        root.setCenter(crearCentro());
 
         escena = new Scene(root);
         escena.setFill(Color.web("#0d0013"));
-
-        // addEventFilter en lugar de setOnKeyPressed para que lleguen aunque un boton tenga el foco
         escena.addEventFilter(KeyEvent.KEY_PRESSED, e -> manejarTecla(e));
         iniciarBucle();
     }
@@ -99,11 +97,10 @@ public class EscenaJuego {
         return hud;
     }
 
-    // el overlay de botones se oculta hasta que el juego termine
     private StackPane crearCentro() {
         overlayGameOver = new VBox(12);
         overlayGameOver.setAlignment(Pos.CENTER);
-        overlayGameOver.setTranslateY(80); // lo baja para quedar sobre el panel dibujado en canvas
+        overlayGameOver.setTranslateY(80);
         overlayGameOver.setVisible(false);
         overlayGameOver.setFocusTraversable(false);
 
@@ -125,24 +122,10 @@ public class EscenaJuego {
         return centro;
     }
 
-    private HBox crearPiePagina() {
-        String controles = modelo.getModo() == ModeloJuego.Modo.DOS_JUGADORES
-                ? "J1: W A S D   |   J2: ↑ ↓ ← →   |   P Pausar   |   ESC Menú"
-                : "↑ ↓ ← →  Mover   |   P  Pausar   |   ESC  Menú";
-        Text t = new Text(controles);
-        t.setFont(Font.font("Arial", 12));
-        t.setFill(Color.web("#6633aa"));
-        HBox pie = new HBox(t);
-        pie.setAlignment(Pos.CENTER);
-        pie.setPadding(new Insets(8, 0, 0, 0));
-        return pie;
-    }
-
     private void manejarTecla(KeyEvent e) {
         KeyCode k = e.getCode();
 
         if (modelo.getModo() == ModeloJuego.Modo.DOS_JUGADORES) {
-            // J1 usa WASD, J2 usa flechas
             switch (k) {
                 case W: modelo.establecerDireccion(Direccion.ARRIBA);     e.consume(); break;
                 case S: modelo.establecerDireccion(Direccion.ABAJO);      e.consume(); break;
@@ -232,7 +215,6 @@ public class EscenaJuego {
         int pts = modelo.getPuntuacion();
         String nombre = nombreJugador;
 
-        // hilo daemon para no bloquear el hilo de JavaFX mientras espera la respuesta HTTP
         Thread t = new Thread(() -> {
             try {
                 ranking.enviarPuntuacion(nombre, pts);

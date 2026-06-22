@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 
 public class ClienteRanking {
 
-    // reemplazar con la URL real cuando el servidor este desplegado
     private static final String URL_SERVIDOR = "https://snake-gamez.onrender.com";
 
     private final HttpClient http = HttpClient.newBuilder()
@@ -43,12 +42,10 @@ public class ClienteRanking {
         return parsear(http.send(req, HttpResponse.BodyHandlers.ofString()).body());
     }
 
-    // parseo manual porque el formato es predecible y evita agregar dependencias externas
     private static final Pattern PATRON =
             Pattern.compile("\"name\"\\s*:\\s*\"(.*?)\"\\s*,\\s*\"score\"\\s*:\\s*(-?\\d+)");
 
     private List<EntradaRanking> parsear(String json) {
-        // arreglo dinamico que acumula las entradas extraidas del JSON
         List<EntradaRanking> lista = new ArrayList<>();
         if (json == null) return lista;
         Matcher m = PATRON.matcher(json);
@@ -62,7 +59,6 @@ public class ClienteRanking {
         return s.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 
-    // el orden importa: primero barras para no desescapar lo que se acaba de escapar
     private String desescapar(String s) {
         return s.replace("\\\\", "\\").replace("\\\"", "\"");
     }

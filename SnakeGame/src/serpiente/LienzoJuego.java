@@ -33,7 +33,6 @@ public class LienzoJuego extends Canvas {
                 new Stop(1, Color.web("#1a0028"))));
         gc.fillRect(0, 0, w, h);
 
-        // cada 4 filas una linea mas brillante para efecto retro
         gc.setLineWidth(0.4);
         gc.setStroke(Color.web("#2d0052"));
         for (int c = 0; c <= cols; c++) gc.strokeLine(c * CELDA, 0, c * CELDA, h);
@@ -57,7 +56,6 @@ public class LienzoJuego extends Canvas {
     }
 
     private void dibujarSerpiente(GraphicsContext gc, Serpiente s, String cHead, String c1, String c2) {
-        // arreglo dinamico con los segmentos del cuerpo; se recorre de cola a cabeza para que la cabeza quede encima
         java.util.LinkedList<Punto> body = s.obtenerCuerpo();
         for (int i = body.size() - 1; i >= 0; i--) {
             Punto p = body.get(i);
@@ -76,7 +74,6 @@ public class LienzoJuego extends Canvas {
         }
     }
 
-    // los ojos se desplazan hacia el lado que mira la cabeza
     private void dibujarOjos(GraphicsContext gc, Punto p, Direccion dir) {
         double cx = p.getColumna() * CELDA + CELDA / 2.0;
         double cy = p.getFila() * CELDA + CELDA / 2.0;
@@ -116,7 +113,6 @@ public class LienzoJuego extends Canvas {
         gc.fillOval(tx, y, 5, 4);
     }
 
-    // los botones de reiniciar/menu los agrega EscenaJuego con StackPane encima del canvas
     private void dibujarGameOver(GraphicsContext gc, ModeloJuego m, double w, double h) {
         gc.setFill(Color.color(0.05, 0, 0.1, 0.82));
         gc.fillRect(0, 0, w, h);
