@@ -3,12 +3,10 @@ setlocal
 title Snake Game - Instalador
 
 echo.
-echo  ==========================================
 echo    SNAKE GAME - Descargando e iniciando...
-echo  ==========================================
 echo.
 
-:: Verificar que Java esta instalado
+
 java -version >nul 2>&1
 if errorlevel 1 (
     echo  ERROR: Java no esta instalado.
@@ -18,10 +16,10 @@ if errorlevel 1 (
     exit /b 1
 )
 
-:: Directorio donde se instalara el juego
+
 set INSTALL_DIR=%USERPROFILE%\SnakeGame
 
-:: Si ya existe, preguntar si reinstalar
+
 if exist "%INSTALL_DIR%" (
     echo  El juego ya esta instalado en: %INSTALL_DIR%
     echo.
@@ -33,7 +31,7 @@ if exist "%INSTALL_DIR%" (
     )
 )
 
-:: Descargar zip del repositorio de GitHub
+
 echo  Descargando juego desde GitHub...
 curl -L -o "%TEMP%\SnakeGame.zip" "https://github.com/Mariodday/SnakeGame/archive/refs/heads/main.zip"
 if errorlevel 1 (
@@ -42,7 +40,6 @@ if errorlevel 1 (
     exit /b 1
 )
 
-:: Extraer el zip
 echo  Extrayendo archivos...
 powershell -Command "Expand-Archive -Path '%TEMP%\SnakeGame.zip' -DestinationPath '%TEMP%\SnakeGameExtract' -Force"
 move "%TEMP%\SnakeGameExtract\SnakeGame-main" "%INSTALL_DIR%" >nul
@@ -51,8 +48,6 @@ rmdir /s /q "%TEMP%\SnakeGameExtract" >nul
 
 echo  Instalacion completada en: %INSTALL_DIR%
 echo.
-
-:ejecutar
 set JAR=%INSTALL_DIR%\SnakeGame\dist\SnakeGame.jar
 set LIBS=%INSTALL_DIR%\SnakeGame\dist\lib
 
