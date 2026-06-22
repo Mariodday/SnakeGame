@@ -1,7 +1,3 @@
-# ============================================================
-# Snake Game - App Launcher (PowerShell)
-# Descarga JavaFX automaticamente si no esta instalado
-# ============================================================
 
 $BASE    = Split-Path $MyInvocation.MyCommand.Path
 $FX_DIR  = (Get-ChildItem "$BASE" -Directory | Where-Object { $_.Name -like "javafx-sdk*" } | Sort-Object Name -Descending | Select-Object -First 1).FullName
@@ -20,7 +16,6 @@ Write-Host "    SNAKE GAME - Launcher" -ForegroundColor Cyan
 Write-Host "  ==========================================" -ForegroundColor Cyan
 Write-Host ""
 
-# --- 1. Verificar JavaFX ---
 if (-not (Test-Path "$FX_LIB\javafx.controls.jar")) {
     Write-Host "  [1/3] JavaFX no encontrado. Descargando..." -ForegroundColor Yellow
     Write-Host "        $FX_URL" -ForegroundColor DarkGray
@@ -50,7 +45,6 @@ if (-not (Test-Path "$FX_LIB\javafx.controls.jar")) {
     Write-Host "  [1/3] JavaFX encontrado." -ForegroundColor Green
 }
 
-# --- 2. Compilar ---
 Write-Host "  [2/3] Compilando..." -ForegroundColor Yellow
 if (-not (Test-Path $OUT_DIR)) { New-Item -ItemType Directory -Path $OUT_DIR | Out-Null }
 
@@ -75,7 +69,6 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Host "  [2/3] Compilacion exitosa." -ForegroundColor Green
 
-# --- 3. Ejecutar ---
 Write-Host "  [3/3] Iniciando juego..." -ForegroundColor Yellow
 Write-Host ""
 
