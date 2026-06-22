@@ -8,20 +8,18 @@ echo    SNAKE GAME - Descargando e iniciando...
 echo  ==========================================
 echo.
 
-:: Verificar que Java esta instalado
-java -version >nul 2>&1
+:: Verificar que Java (JDK) esta instalado
+javac -version >nul 2>&1
 if errorlevel 1 (
-    echo  ERROR: Java no esta instalado.
-    echo  Descargalo desde: https://www.java.com/es/download/
+    echo  ERROR: Java JDK no esta instalado.
+    echo  Descargalo desde: https://www.oracle.com/java/technologies/downloads/
     echo.
     pause
     exit /b 1
 )
 
-:: Directorio donde se instalara el juego
 set INSTALL_DIR=%USERPROFILE%\SnakeGame
 
-:: Si ya existe, preguntar si reinstalar
 if exist "%INSTALL_DIR%" (
     echo  El juego ya esta instalado en: %INSTALL_DIR%
     echo.
@@ -49,20 +47,42 @@ move "%TEMP%\SnakeGameExtract\SnakeGame-main" "%INSTALL_DIR%" >nul
 del "%TEMP%\SnakeGame.zip" >nul
 rmdir /s /q "%TEMP%\SnakeGameExtract" >nul
 
-echo  Instalacion completada en: %INSTALL_DIR%
+:: Compilar el codigo fuente
+echo  Compilando el juego...
+set SRC=%INSTALL_DIR%\SnakeGame\src
+set OUT=%INSTALL_DIR%\out
+set LIBS=%INSTALL_DIR%\SnakeGame\dist\lib
+
+if not exist "%OUT%" mkdir "%OUT%"
+
+javac --module-path "%LIBS%" ^
+      --add-modules javafx.controls,javafx.graphics,javafx.base ^
+      -d "%OUT%" ^
+      "%SRC%\module-info.java" ^
+      "%SRC%\serpiente\*.java"
+
+if errorlevel 1 (
+    echo  ERROR: Fallo la compilacion.
+    pause
+    exit /b 1
+)
+
+echo  Instalacion completada.
 echo.
 
 :ejecutar
-set JAR=%INSTALL_DIR%\SnakeGame\dist\SnakeGame.jar
+set OUT=%INSTALL_DIR%\out
 set LIBS=%INSTALL_DIR%\SnakeGame\dist\lib
 
-if not exist "%JAR%" (
-    echo  ERROR: No se encontro el archivo del juego.
+if not exist "%OUT%" (
+    echo  ERROR: No se encontro el juego compilado.
     pause
     exit /b 1
 )
 
 echo  Iniciando Snake Game...
-java --module-path "%LIBS%" --add-modules javafx.controls,javafx.graphics,javafx.base -jar "%JAR%"
+java --module-path "%LIBS%;%OUT%" ^
+     --add-modules javafx.controls,javafx.graphics,javafx.base ^
+     -m serpiente/serpiente.Principal
 
 endlocal
