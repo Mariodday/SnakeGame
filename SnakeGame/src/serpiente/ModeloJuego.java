@@ -2,6 +2,8 @@ package serpiente;
 
 import java.util.Random;
 
+// logica del juego; se conecta con Serpiente, Punto y Direccion
+// EscenaJuego llama avanzar() cada 150ms y lee el estado con los getters
 public class ModeloJuego {
 
     public enum Modo { NORMAL, VS_IA, DOS_JUGADORES }
@@ -12,15 +14,17 @@ public class ModeloJuego {
     private final Modo modo;
     private final Random rnd = new Random();
 
+    // cada Serpiente contiene internamente un arreglo dinamico LinkedList<Punto>
     private Serpiente jugador1;
     private Serpiente jugador2;
     private Serpiente ia;
-    private Punto manzana;
+
+    private Punto manzana; // posicion actual de la manzana en el tablero
     private int puntosJ1;
     private int puntosJ2;
     private boolean terminado;
     private boolean comioManzana;
-    private int ganador;
+    private int ganador; // 0=empate, 1=J1, 2=J2
 
     public ModeloJuego(Modo modo) {
         this.modo = modo;
@@ -31,6 +35,7 @@ public class ModeloJuego {
         this(Modo.NORMAL);
     }
 
+    // funcion: reinicia todas las variables al estado inicial
     public void reiniciar() {
         jugador1 = new Serpiente(6, FILAS / 2, Direccion.DERECHA);
         jugador2 = modo == Modo.DOS_JUGADORES ? new Serpiente(COLUMNAS - 7, FILAS / 2, Direccion.IZQUIERDA) : null;
@@ -43,6 +48,7 @@ public class ModeloJuego {
         generarManzana();
     }
 
+    // funcion: tick principal llamado cada 150ms desde EscenaJuego
     public void avanzar() {
         if (terminado) return;
 
@@ -89,6 +95,7 @@ public class ModeloJuego {
         }
     }
 
+    // funcion: genera una posicion aleatoria para la manzana que no este ocupada
     private void generarManzana() {
         Punto p;
         do {
@@ -97,6 +104,7 @@ public class ModeloJuego {
         manzana = p;
     }
 
+    // funcion: revisa si un Punto esta dentro del arreglo dinamico de alguna serpiente
     private boolean celdaOcupada(Punto p) {
         if (jugador1.obtenerCuerpo().contains(p)) return true;
         if (jugador2 != null && jugador2.obtenerCuerpo().contains(p)) return true;
@@ -104,8 +112,10 @@ public class ModeloJuego {
         return false;
     }
 
+    // funcion: decide la direccion de la IA; 1 de cada 3 movimientos es aleatorio
     private void moverIA_decision() {
         if (rnd.nextInt(3) == 0) {
+            // arreglo estatico de enum con las 4 direcciones posibles
             Direccion[] todas = Direccion.values();
             ia.establecerDireccion(todas[rnd.nextInt(todas.length)]);
             return;
@@ -124,6 +134,7 @@ public class ModeloJuego {
         }
     }
 
+    // funcion: mueve la IA y la hace reaparecer si choca
     private void moverIA() {
         Punto sig = ia.obtenerCabeza().trasladar(ia.obtenerDireccionSiguiente());
         boolean comio = sig.equals(manzana);
@@ -135,6 +146,7 @@ public class ModeloJuego {
             reaparecerIA();
     }
 
+    // funcion: crea una nueva Serpiente IA en una posicion libre del tablero
     private void reaparecerIA() {
         Punto p;
         int intentos = 0;
@@ -142,6 +154,7 @@ public class ModeloJuego {
             p = new Punto(rnd.nextInt(COLUMNAS - 6) + 3, rnd.nextInt(FILAS - 6) + 3);
             intentos++;
         } while (jugador1.obtenerCuerpo().contains(p) && intentos < 50);
+        // arreglo estatico de enum para elegir la direccion inicial al reaparecer
         Direccion[] dirs = Direccion.values();
         ia = new Serpiente(p.getColumna(), p.getFila(), dirs[rnd.nextInt(dirs.length)]);
     }

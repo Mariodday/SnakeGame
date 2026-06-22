@@ -2,6 +2,8 @@ package serpiente;
 
 import java.util.Objects;
 
+// representa una celda del tablero con columna y fila
+// usado por Serpiente (cuerpo) y ModeloJuego (manzana)
 public class Punto {
 
     private final int columna;
@@ -12,7 +14,7 @@ public class Punto {
         this.fila = fila;
     }
 
-    // devuelve un nuevo Punto desplazado una celda en la direccion indicada
+    // funcion: devuelve un nuevo Punto desplazado una celda en la direccion indicada
     public Punto trasladar(Direccion direccion) {
         switch (direccion) {
             case ARRIBA:    return new Punto(columna,     fila - 1);
@@ -26,7 +28,7 @@ public class Punto {
     public int getColumna() { return columna; }
     public int getFila()    { return fila; }
 
-    // equals y hashCode son necesarios para que LinkedList.contains() compare por valor
+    // equals y hashCode permiten usar LinkedList.contains() comparando por valor y no por referencia
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Punto)) return false;

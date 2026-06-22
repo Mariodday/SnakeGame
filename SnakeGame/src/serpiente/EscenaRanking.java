@@ -13,10 +13,12 @@ import javafx.stage.Stage;
 
 import java.util.List;
 
+// se conecta con ClienteRanking (pide la lista) y EscenaMenu (boton volver)
 public class EscenaRanking {
 
     private final Stage stage;
     private final Scene escena;
+    // se conecta con ClienteRanking para obtener y mostrar el ranking del servidor
     private final ClienteRanking clienteRanking = new ClienteRanking();
 
     private VBox listaRanking;
@@ -47,8 +49,8 @@ public class EscenaRanking {
         scroll.setPrefHeight(300);
         scroll.setStyle("-fx-background: #16213e; -fx-background-color: #16213e;");
 
-        Button btnActualizar = crearBtn("↺  Actualizar",    "#0f3460", "#16213e");
-        Button btnVolver     = crearBtn("←  Volver",        "#e74c3c", "#c0392b");
+        Button btnActualizar = crearBtn("↺  Actualizar", "#0f3460", "#16213e");
+        Button btnVolver     = crearBtn("←  Volver",     "#e74c3c", "#c0392b");
         btnActualizar.setOnAction(e -> cargarRanking());
         btnVolver.setOnAction(e     -> stage.setScene(new EscenaMenu(stage).getEscena()));
 
@@ -65,14 +67,14 @@ public class EscenaRanking {
         cargarRanking();
     }
 
+    // funcion: llama al servidor en un hilo separado para no congelar la pantalla
     private void cargarRanking() {
         estado.setText("Cargando...");
         listaRanking.getChildren().clear();
 
-        // hilo daemon para no bloquear el hilo de JavaFX durante la llamada HTTP
         Thread t = new Thread(() -> {
             try {
-                // arreglo dinamico con las entradas devueltas por el servidor
+                // arreglo dinamico List<EntradaRanking> devuelto por ClienteRanking
                 List<EntradaRanking> datos = clienteRanking.obtenerRanking();
                 Platform.runLater(() -> mostrar(datos));
             } catch (Exception ex) {
@@ -83,6 +85,7 @@ public class EscenaRanking {
         t.start();
     }
 
+    // funcion: recorre el arreglo dinamico y construye una fila visual por cada EntradaRanking
     private void mostrar(List<EntradaRanking> datos) {
         listaRanking.getChildren().clear();
         if (datos.isEmpty()) {
@@ -95,9 +98,9 @@ public class EscenaRanking {
             EntradaRanking e = datos.get(i);
             String medalla = i == 0 ? "🥇" : i == 1 ? "🥈" : i == 2 ? "🥉" : "#" + (i + 1);
 
-            Text pos  = mk(medalla, 14, "#f1c40f", false);
-            Text nom  = mk(e.getNombre(), 14, "#ecf0f1", true);
-            Text pts  = mk(String.valueOf(e.getPuntuacion()), 14, "#4ecca3", true);
+            Text pos = mk(medalla, 14, "#f1c40f", false);
+            Text nom = mk(e.getNombre(), 14, "#ecf0f1", true);
+            Text pts = mk(String.valueOf(e.getPuntuacion()), 14, "#4ecca3", true);
 
             Region sp = new Region();
             HBox.setHgrow(sp, Priority.ALWAYS);

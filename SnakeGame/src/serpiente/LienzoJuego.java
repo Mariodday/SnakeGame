@@ -10,6 +10,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 
+// se conecta con ModeloJuego (lee el estado) y Serpiente (recorre el arreglo dinamico del cuerpo)
+// EscenaJuego lo llama en cada tick para redibujar todo desde cero
 public class LienzoJuego extends Canvas {
 
     public static final int CELDA = 28;
@@ -23,6 +25,7 @@ public class LienzoJuego extends Canvas {
         this.rows = rows;
     }
 
+    // funcion principal: dibuja fondo, cuadricula, manzana, serpientes y game over
     public void dibujar(ModeloJuego m) {
         GraphicsContext gc = getGraphicsContext2D();
         double w = cols * CELDA;
@@ -55,6 +58,7 @@ public class LienzoJuego extends Canvas {
             dibujarGameOver(gc, m, w, h);
     }
 
+    // funcion: recorre el arreglo dinamico LinkedList<Punto> de la serpiente de cola a cabeza
     private void dibujarSerpiente(GraphicsContext gc, Serpiente s, String cHead, String c1, String c2) {
         java.util.LinkedList<Punto> body = s.obtenerCuerpo();
         for (int i = body.size() - 1; i >= 0; i--) {
@@ -74,6 +78,7 @@ public class LienzoJuego extends Canvas {
         }
     }
 
+    // funcion: posiciona los ojos segun la direccion que mira la cabeza
     private void dibujarOjos(GraphicsContext gc, Punto p, Direccion dir) {
         double cx = p.getColumna() * CELDA + CELDA / 2.0;
         double cy = p.getFila() * CELDA + CELDA / 2.0;
@@ -93,6 +98,7 @@ public class LienzoJuego extends Canvas {
         gc.fillOval(x2-r/2.0, y2-r/2.0, r, r);
     }
 
+    // funcion: dibuja la manzana con glow, cuerpo y brillo
     private void dibujarManzana(GraphicsContext gc, Punto p) {
         double x = p.getColumna() * CELDA;
         double y = p.getFila() * CELDA;
@@ -113,6 +119,7 @@ public class LienzoJuego extends Canvas {
         gc.fillOval(tx, y, 5, 4);
     }
 
+    // funcion: dibuja el panel de game over encima del canvas; los botones los agrega EscenaJuego con StackPane
     private void dibujarGameOver(GraphicsContext gc, ModeloJuego m, double w, double h) {
         gc.setFill(Color.color(0.05, 0, 0.1, 0.82));
         gc.fillRect(0, 0, w, h);
